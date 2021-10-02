@@ -18,6 +18,7 @@ public class PlayerControoler : MonoBehaviour
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 
         _rb.rotation = angle;
+        _rb.velocity = Vector2.zero; 
     }
 
 

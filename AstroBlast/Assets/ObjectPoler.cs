@@ -57,6 +57,13 @@ public class ObjectPoler : MonoBehaviour
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
 
+        IPoolerdObject poolerdObj = objectToSpawn.GetComponent<IPoolerdObject>();
+
+        if (poolerdObj != null) 
+        {
+            poolerdObj.OnObjectSpawn();
+        }
+
         poolDicrionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;

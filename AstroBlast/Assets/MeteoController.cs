@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class MeteoController : MonoBehaviour, IPoolerdObject
 {
-    private Vector3 _eartPoint = new Vector3(0, 0, 0);
-    private float _speed = 0.5f;
-    private Vector3 _targetPos;
-
-    public void OnObjectSpawn()
-    {
-        throw new System.NotImplementedException();
-    }
+    private Rigidbody2D _rb;
+    private GameObject _player;
+   
 
     private void Start()
     {
-        _targetPos = _eartPoint - transform.position;
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    private void Update()
     {
-        transform.Translate(_targetPos * _speed * Time.deltaTime);
+        _rb.AddForce((_player.transform.position - transform.position).normalized * 2f);
+    }
+
+    public void OnObjectSpawn()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        this.gameObject.SetActive(false);
     }
 }
