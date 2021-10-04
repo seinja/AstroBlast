@@ -1,17 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class MeteoController : MonoBehaviour, IPoolerdObject
+public class MeteoController : MonoBehaviour
 {
+
+    [SerializeField] private TextMeshProUGUI _hpText;
     private Rigidbody2D _rb;
+    private int _hp;
     private GameObject _player;
+
    
 
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _rb = GetComponent<Rigidbody2D>();
+        _hp = Random.Range(3, 7);
+        _hpText.text = _hp.ToString();
+        
     }
 
     private void Update()
@@ -19,13 +27,22 @@ public class MeteoController : MonoBehaviour, IPoolerdObject
         _rb.AddForce((_player.transform.position - transform.position).normalized * 2f);
     }
 
-    public void OnObjectSpawn()
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        this.gameObject.SetActive(true);
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Earth"))
+        {
+            Destroy(this.gameObject);
+        }
+        if (collision.gameObject.CompareTag("Bullet")) 
+        {
+            _hp--;
+            if (_hp <= 0) { Destroy(this.gameObject); }
+            _hpText.text = _hp.ToString();
+            
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        this.gameObject.SetActive(false);
-    }
+
 }

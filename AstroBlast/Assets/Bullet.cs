@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        InvokeRepeating("Shoot", 0.2f, 0.5f);
+        InvokeRepeating("Shoot", 0.2f, 0.2f);
     }
 
 
