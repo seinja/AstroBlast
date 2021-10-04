@@ -7,7 +7,7 @@ public class Bullet : MonoBehaviour
     public Transform firePoint;
     public GameObject bulletPrefab;
 
-    public float bulletForce = 45f;
+    public float bulletForce = 225f;
 
     private void Start()
     {
