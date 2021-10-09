@@ -17,14 +17,14 @@ public class MeteoController : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _rb = GetComponent<Rigidbody2D>();
-        _hp = Random.Range(3, 7);
+        _hp = Random.Range(GameManager.Instance.GetCurrentLevel(), GameManager.Instance.GetCurrentLevel() + 5);
         _hpText.text = _hp.ToString();
         
     }
 
     private void Update()
     {
-        _rb.AddForce((_player.transform.position - transform.position).normalized * 2f);
+        _rb.AddForce((_player.transform.position - transform.position).normalized * 1.5f);
 
         if (GameManager.isGameWin || GameManager.isGameOver)
         {
@@ -34,15 +34,17 @@ public class MeteoController : MonoBehaviour
 
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Earth"))
         {
             Destroy(this.gameObject);
         }
-        if (collision.gameObject.CompareTag("Bullet"))
+        if (collision.gameObject.TryGetComponent<BulletController>(out BulletController bulletController))
         {
-            _hp--;
+
+            _hp -= bulletController.GetDamage();
+            Debug.Log("Damage : " + bulletController.GetDamage());
             if (_hp <= 0)
             {
                 GameManager.Instance.UpProgression();

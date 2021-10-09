@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviour
     public float bulletForce = 225f;
     public float _shootigSpeed;
 
+    public int _damageShop;
+
     private void Start()
     {
         Debug.Log("_shootingSpeed " + _shootigSpeed);
@@ -22,6 +24,7 @@ public class Bullet : MonoBehaviour
     void Shoot() 
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation );
+        bullet.GetComponent<BulletController>()._damage = _damageShop;
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         _sparks.SetActive(true);
         rb.AddForce(firePoint.up * bulletForce, ForceMode2D.Impulse);
@@ -41,4 +44,11 @@ public class Bullet : MonoBehaviour
         }
 
     }
+
+    public void SetDamage(int _shopDamage)
+    {
+        _damageShop = _shopDamage;
+    }
+
+    public int GetDamage() { return _damageShop; }
 }

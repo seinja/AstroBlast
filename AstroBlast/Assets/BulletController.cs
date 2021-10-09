@@ -7,7 +7,7 @@ public class BulletController : MonoBehaviour
     [SerializeField] private GameObject _explosion;
     private float offsetX = 70f;
     private float offsetY = 41f;
-
+    public int _damage;
 
 
     void Update()
@@ -41,4 +41,8 @@ public class BulletController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         Destroy(this.gameObject);
     }
+
+  
+
+    public int GetDamage() { return _damage; }
 }

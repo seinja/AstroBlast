@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CoinController : MonoBehaviour
 {
-    private Rigidbody2D _rb;
     private GameObject _player;
     private int _amount;
 
@@ -13,14 +12,13 @@ public class CoinController : MonoBehaviour
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        _rb = GetComponent<Rigidbody2D>();
         _amount = Random.Range(1, GameManager.Instance.GetCurrentLevel()*6);
     }
 
     private void Update()
     {
-        _rb.AddForce((_player.transform.position - transform.position).normalized * 2f);
 
+        transform.Translate((_player.transform.position - transform.position).normalized * 25f * Time.deltaTime);
         if (GameManager.isGameWin || GameManager.isGameOver)
         {
             Destroy(this.gameObject);
