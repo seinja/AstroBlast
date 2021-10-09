@@ -4,22 +4,32 @@ using UnityEngine;
 
 public class PlayerControoler : MonoBehaviour
 {
-    private Vector3 _mousePos;
-    private Rigidbody2D _rb;
+    [SerializeField]private float _speed = .01f;
+    [SerializeField]private float offset = 10f;
+    [SerializeField] private int _hp = 1;
+    Vector3 diretection;
 
-    private void Start()
+    private void Update()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        diretection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        float angle = Mathf.Atan2(diretection.y, diretection.x) * Mathf.Rad2Deg - 90f;
+        Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, angle + offset));
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, _speed * Time.deltaTime);
     }
-    void Update()
-    {
-        _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 lookDir = _mousePos - transform.position;
-        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 
-        _rb.rotation = angle;
-        _rb.velocity = Vector2.zero; 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Meteor")) 
+        {
+            _hp--;
+            if(_hp <= 0) 
+            {
+                GameManager.Instance.GameOver();
+                Debug.Log("Game Over");
+            }
+        }
     }
+
 
 
 }
