@@ -12,7 +12,7 @@ public class PlayerControoler : MonoBehaviour
     private void Update()
     {
         diretection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-        float angle = Mathf.Atan2(diretection.y, diretection.x) * Mathf.Rad2Deg - 90f;
+        float angle = Mathf.Atan2(diretection.y, diretection.x) * Mathf.Rad2Deg + 90f;
         Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, angle + offset));
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, _speed * Time.deltaTime);
     }
