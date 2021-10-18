@@ -53,8 +53,11 @@ public class GameManager : MonoBehaviour
         _currentLevelText.text = _currentLevel.ToString();
         _nextLevel = _currentLevel + 1;
         _nextLevelText.text = _nextLevel.ToString();
-        _levelProgression.maxValue = _currentLevel * 6;
+        _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
+
+
+
         
     }
 
@@ -111,10 +114,10 @@ public class GameManager : MonoBehaviour
         _cuurentAmountOfCoins = 0;
         _cuurentAmountOfCoinsText.text = _cuurentAmountOfCoins.ToString();
 
-        _levelProgression.maxValue = _currentLevel * 6;
+        _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
 
-        FindObjectOfType<MeteoSpawner>().StartSpawn();
+        FindObjectOfType<MeteoSpawner>().RestartSpawn();
 
     }
 
@@ -131,7 +134,7 @@ public class GameManager : MonoBehaviour
         _currentLevelText.text = _currentLevel.ToString();
         _nextLevel = _currentLevel + 1;
         _nextLevelText.text = _nextLevel.ToString();
-        _levelProgression.maxValue = _currentLevel * 5;
+        _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
     }
 
@@ -145,6 +148,14 @@ public class GameManager : MonoBehaviour
     public void ResetProgress() 
     {
         PlayerPrefs.DeleteAll();
+        _currentLevel = 1;
+        _currentLevelText.text = _currentLevel.ToString();
+        _nextLevel = _currentLevel + 1;
+        _nextLevelText.text = _nextLevel.ToString();
+        _levelProgression.maxValue = _currentLevel * 3;
+        _levelProgression.value = 0;
+
+        _shopController.ResetProgress();
     }
 
 }

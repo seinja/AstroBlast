@@ -5,14 +5,15 @@ using UnityEngine;
 public class MeteoSpawner : MonoBehaviour
 {
     public GameObject[] meteors  = new GameObject[3];
+    private int _countOfMeteorsOnLevel;
     private float _mapOffsetX = 70f;
     private float _mapOffsetY = 41f;
-    private int _level;
 
     private void Start()
     {
-        _level = GameManager.Instance.GetCurrentLevel() * 6 + 2;
-        StartSpawn();
+        _countOfMeteorsOnLevel = 0;
+        _countOfMeteorsOnLevel += GameManager.Instance.GetCurrentLevel() * 3;
+        SpawnOtherMeteor();
     }
 
     private void SpawnTargets() 
@@ -46,22 +47,26 @@ public class MeteoSpawner : MonoBehaviour
         
     }
 
-    IEnumerator SpawnMeteorits() 
+    public void SpawnOtherMeteor() 
     {
-        if (!GameManager.isGameWin && !GameManager.isGameOver)
+        if (!GameManager.isGameWin && !GameManager.isGameOver) 
         {
-            for (int i = 0; i <= _level; i++)
+            if (_countOfMeteorsOnLevel >= 0) 
             {
+                _countOfMeteorsOnLevel--;
                 SpawnTargets();
-                yield return new WaitForSeconds(1f);
             }
         }
     }
 
-    public void StartSpawn() 
+    public void RestartSpawn() 
     {
-        StartCoroutine(SpawnMeteorits());
+        _countOfMeteorsOnLevel = 0;
+        _countOfMeteorsOnLevel += GameManager.Instance.GetCurrentLevel() * 3;
+        SpawnTargets();
     }
+
+   
 
 
 

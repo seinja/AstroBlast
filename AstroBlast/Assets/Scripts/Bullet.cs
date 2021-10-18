@@ -14,13 +14,12 @@ public class Bullet : MonoBehaviour
 
     public int _damageShop;
 
+
     private void Start()
     {
         _shootAudio = GetComponent<AudioSource>();
-        Debug.Log("_shootingSpeed " + _shootigSpeed);
         StartCoroutine(Shooting());
     }
-
 
 
     void Shoot() 
@@ -38,12 +37,12 @@ public class Bullet : MonoBehaviour
     {
         if (!GameManager.isGameWin && !GameManager.isGameOver)
         {
-            Shoot();
-            yield return new WaitForSeconds(0.09f);
-            _sparks.SetActive(false);
-            yield return new WaitForSeconds(_shootigSpeed);
-            
-            StartCoroutine(Shooting());
+
+                Shoot();
+                yield return new WaitForSeconds(0.09f);
+                _sparks.SetActive(false);
+                yield return new WaitForSeconds(_shootigSpeed);
+                StartCoroutine(Shooting());
         }
 
     }

@@ -9,6 +9,8 @@ public class MeteoController : MonoBehaviour
     [SerializeField] private GameObject _childMeteor;
     [SerializeField] private GameObject _explosion;
     [SerializeField] private GameObject coin;
+
+    private MeteoSpawner _meteorSpawner;
     private Rigidbody2D _rb;
     private int _hp;
     private GameObject _player;
@@ -17,6 +19,7 @@ public class MeteoController : MonoBehaviour
 
     private void Start()
     {
+        _meteorSpawner = GameObject.FindObjectOfType<MeteoSpawner>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _rb = GetComponent<Rigidbody2D>();
         _hp = Random.Range(GameManager.Instance.GetCurrentLevel(), GameManager.Instance.GetCurrentLevel() + 5);
@@ -26,7 +29,7 @@ public class MeteoController : MonoBehaviour
 
     private void Update()
     {
-        _rb.AddForce((_player.transform.position - transform.position).normalized * 1f);
+        _rb.AddForce((_player.transform.position - transform.position).normalized * 1.9f);
 
         if (GameManager.isGameWin || GameManager.isGameOver)
         {
@@ -48,6 +51,8 @@ public class MeteoController : MonoBehaviour
             _hp -= bulletController.GetDamage();
             if (_hp <= 0)
             {
+                _meteorSpawner.SpawnOtherMeteor();
+                _meteorSpawner.SpawnOtherMeteor();
                 GameManager.Instance.UpProgression();
                 Instantiate(coin, transform.position, Quaternion.identity);
                 //Instantiate(_childMeteor, transform.position, Quaternion.identity);

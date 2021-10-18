@@ -20,7 +20,6 @@ public class ShopController : MonoBehaviour
     
 
     private Bullet _bulletController;
-    [SerializeField] private BulletController _bullet;
     
 
 
@@ -120,6 +119,33 @@ public class ShopController : MonoBehaviour
     public void ResetProgress()
     {
         PlayerPrefs.DeleteAll();
+        _updateSpeedLevel = 4;
+        _updateDamageLevel = 1;
+
+        _speedPrice = PlayerPrefs.GetInt("UpdateSpeedPrice", 5);
+        _speed = 1f / _updateSpeedLevel;
+
+        _shopDamage = _updateDamageLevel;
+        __damagePrice = PlayerPrefs.GetInt("UpdateDamagePrice", 8);
+
+
+
+        _speedText.text = Mathf.Round(1 / _speed).ToString();
+        _speedPriceText.text = _speedPrice.ToString();
+
+
+        _bulletController = FindObjectOfType<Bullet>();
+        _bulletController._shootigSpeed = _speed;
+
+        _bulletController._damageShop = _shopDamage;
+
+        _damagePriceText.text = __damagePrice.ToString();
+        _damageText.text = _shopDamage.ToString();
+
+
+
+        _allMoney = PlayerPrefs.GetInt("SafeMoney", 0);
+        _allMoneyText.text = _allMoney.ToString();
     }
 
 
