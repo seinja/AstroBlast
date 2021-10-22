@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Slider _levelProgression;
     [SerializeField] private GameObject _shopPanel;
 
+
+    [SerializeField] private GameObject _progressionUI;
     private ShopController _shopController;
 
 
@@ -30,14 +29,16 @@ public class GameManager : MonoBehaviour
     private int _currentLevel;
     private int _nextLevel;
     private int _cuurentAmountOfCoins = 0;
+    private int _countOfMeteors;
 
 
     // Инициализация синглтона  и полей 
     private void Awake()
     {
+        _progressionUI.SetActive(true);
         _shopController = GetComponent<ShopController>();
 
-        if (Instance == null) 
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -56,24 +57,30 @@ public class GameManager : MonoBehaviour
         _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
 
+        _countOfMeteors = _currentLevel * 3;
 
 
-        
+
+
     }
 
     // Увеличение прогресса уровня.
-    public void UpProgression() 
+    public void UpProgression()
     {
         _levelProgression.value++;
-        if (_levelProgression.value == _levelProgression.maxValue) 
+        if (_levelProgression.value >= _levelProgression.maxValue)
         {
             WinGame();
+
         }
     }
 
+
+
     // Конец игры и вывод магаза
-    public void GameOver() 
+    public void GameOver()
     {
+        _progressionUI.SetActive(false);
         isGameOver = true;
         Time.timeScale = 0f;
         _shopPanel.SetActive(true);
@@ -84,8 +91,9 @@ public class GameManager : MonoBehaviour
 
     }
     // Конец игры и вывод магаза
-    public void WinGame() 
+    public void WinGame()
     {
+        _progressionUI.SetActive(false);
         isGameWin = true;
         Time.timeScale = 0f;
         _shopPanel.SetActive(true);
@@ -97,15 +105,16 @@ public class GameManager : MonoBehaviour
 
 
     // Подбор монеты игроком и изменение UI
-    public void PickUpCoin(int amount) 
+    public void PickUpCoin(int amount)
     {
         _cuurentAmountOfCoins += amount;
         _cuurentAmountOfCoinsText.text = _cuurentAmountOfCoins.ToString();
     }
 
     // Возвращение в игру
-    public void BackInGame() 
+    public void BackInGame()
     {
+        _progressionUI.SetActive(true);
         isGameOver = false;
         isGameWin = false;
         ClearProgressBar();
@@ -117,25 +126,30 @@ public class GameManager : MonoBehaviour
         _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
 
+        _countOfMeteors = _currentLevel * 3;
+
         FindObjectOfType<MeteoSpawner>().RestartSpawn();
+        FindObjectOfType<Bullet>().ContinueShoot();
 
     }
 
     // Выход
-    public void Quit() 
+    public void Quit()
     {
         Application.Quit();
     }
 
 
     // Отчистка UI
-    private void ClearProgressBar() 
+    private void ClearProgressBar()
     {
         _currentLevelText.text = _currentLevel.ToString();
         _nextLevel = _currentLevel + 1;
         _nextLevelText.text = _nextLevel.ToString();
         _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
+
+        _countOfMeteors = _currentLevel * 3;
     }
 
     public int GetCurrentLevel() { return _currentLevel; }
@@ -145,7 +159,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("CuurentLevel", _currentLevel);
     }
 
-    public void ResetProgress() 
+    public void ResetProgress()
     {
         PlayerPrefs.DeleteAll();
         _currentLevel = 1;
@@ -155,7 +169,11 @@ public class GameManager : MonoBehaviour
         _levelProgression.maxValue = _currentLevel * 3;
         _levelProgression.value = 0;
 
+        _countOfMeteors = _currentLevel * 3;
+
         _shopController.ResetProgress();
     }
+
+    public int GetMeteorsCount() { return _countOfMeteors; }
 
 }

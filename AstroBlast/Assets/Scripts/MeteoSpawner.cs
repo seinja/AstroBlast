@@ -1,22 +1,18 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MeteoSpawner : MonoBehaviour
 {
-    public GameObject[] meteors  = new GameObject[3];
-    private int _countOfMeteorsOnLevel;
+    public GameObject[] meteors = new GameObject[3];
     private float _mapOffsetX = 70f;
     private float _mapOffsetY = 41f;
 
     private void Start()
     {
-        _countOfMeteorsOnLevel = 0;
-        _countOfMeteorsOnLevel += GameManager.Instance.GetCurrentLevel() * 3;
-        SpawnOtherMeteor();
+        StartCoroutine(SpawnMeteors());
     }
 
-    private void SpawnTargets() 
+    private void SpawnTargets()
     {
         float randomX = Random.Range(_mapOffsetX, _mapOffsetX + 5);
         float randomY = Random.Range(_mapOffsetY, _mapOffsetY);
@@ -25,7 +21,7 @@ public class MeteoSpawner : MonoBehaviour
         float randPos = Random.Range(0, 10);
         if (randPos < 2.5)
         {
-            
+
             Vector3 posiotionToSpawn = new Vector3(randomX, randomY, 0);
             Instantiate(meteors[randMeteor], posiotionToSpawn, Quaternion.identity);
         }
@@ -39,34 +35,32 @@ public class MeteoSpawner : MonoBehaviour
             Vector3 posiotionToSpawn = new Vector3(randomX, -randomY, 0);
             Instantiate(meteors[randMeteor], posiotionToSpawn, Quaternion.identity);
         }
-        else if (randPos > 7.5 && randPos < 10) 
+        else if (randPos > 7.5 && randPos < 10)
         {
             Vector3 posiotionToSpawn = new Vector3(-randomX, randomY, 0);
             Instantiate(meteors[randMeteor], posiotionToSpawn, Quaternion.identity);
         }
-        
+
     }
 
-    public void SpawnOtherMeteor() 
+    IEnumerator SpawnMeteors()
     {
-        if (!GameManager.isGameWin && !GameManager.isGameOver) 
+        if (!GameManager.isGameWin && !GameManager.isGameOver)
         {
-            if (_countOfMeteorsOnLevel >= 0) 
+            for (int i = 0; i <= GameManager.Instance.GetMeteorsCount() + 1; i++)
             {
-                _countOfMeteorsOnLevel--;
                 SpawnTargets();
+                yield return new WaitForSeconds(1f);
             }
         }
     }
 
-    public void RestartSpawn() 
+    public void RestartSpawn()
     {
-        _countOfMeteorsOnLevel = 0;
-        _countOfMeteorsOnLevel += GameManager.Instance.GetCurrentLevel() * 3;
-        SpawnTargets();
+        StartCoroutine(SpawnMeteors());
     }
 
-   
+
 
 
 

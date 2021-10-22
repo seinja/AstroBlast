@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletController : MonoBehaviour
@@ -18,7 +17,7 @@ public class BulletController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Meteor")) 
+        if (collision.gameObject.CompareTag("Meteor"))
         {
             StartCoroutine(Explsion());
         }
@@ -33,7 +32,7 @@ public class BulletController : MonoBehaviour
     }
 
 
-    IEnumerator Explsion() 
+    IEnumerator Explsion()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         GetComponent<SpriteRenderer>().enabled = false;
@@ -42,7 +41,7 @@ public class BulletController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-  
+
 
     public int GetDamage() { return _damage; }
 }

@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MoonRotator : MonoBehaviour
 {
-    private Vector3 _earthPoint = new Vector3(0,0,0);
+    private Vector3 _earthPoint = new Vector3(0, 0, 0);
     private float _rotateSpeed = 10f;
 
     void Update()

@@ -1,35 +1,35 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class MeteoController : MonoBehaviour
 {
+    private static int _countOFDeath = 0;
     [SerializeField] private TextMeshProUGUI _hpText;
-    [SerializeField] private GameObject _childMeteor;
     [SerializeField] private GameObject _explosion;
     [SerializeField] private GameObject coin;
 
-    private MeteoSpawner _meteorSpawner;
     private Rigidbody2D _rb;
     private int _hp;
+    private float _speed;
     private GameObject _player;
 
-   
+
 
     private void Start()
     {
-        _meteorSpawner = GameObject.FindObjectOfType<MeteoSpawner>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _rb = GetComponent<Rigidbody2D>();
-        _hp = Random.Range(GameManager.Instance.GetCurrentLevel(), GameManager.Instance.GetCurrentLevel() + 5);
+        _hp = Random.Range(GameManager.Instance.GetCurrentLevel() + 1, GameManager.Instance.GetCurrentLevel() + 5);
         _hpText.text = _hp.ToString();
-        
+
+        _speed = 2 + 5 / _hp;
+
     }
 
     private void Update()
     {
-        _rb.AddForce((_player.transform.position - transform.position).normalized * 1.9f);
+        _rb.AddForce((_player.transform.position - transform.position).normalized * _speed);
 
         if (GameManager.isGameWin || GameManager.isGameOver)
         {
@@ -51,12 +51,8 @@ public class MeteoController : MonoBehaviour
             _hp -= bulletController.GetDamage();
             if (_hp <= 0)
             {
-                _meteorSpawner.SpawnOtherMeteor();
-                _meteorSpawner.SpawnOtherMeteor();
                 GameManager.Instance.UpProgression();
                 Instantiate(coin, transform.position, Quaternion.identity);
-                //Instantiate(_childMeteor, transform.position, Quaternion.identity);
-                //Instantiate(_childMeteor, transform.position, Quaternion.identity);
 
                 StartCoroutine(Explosion());
             }
@@ -66,14 +62,16 @@ public class MeteoController : MonoBehaviour
     }
 
 
-    IEnumerator Explosion() 
+    IEnumerator Explosion()
     {
+        _countOFDeath++;
+        Debug.Log(_countOFDeath);
         GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         GetComponent<CircleCollider2D>().enabled = false;
         _hpText.enabled = false;
         _explosion.SetActive(true);
-      
+
         yield return new WaitForSeconds(1f);
         _explosion.SetActive(false);
         Destroy(this.gameObject);

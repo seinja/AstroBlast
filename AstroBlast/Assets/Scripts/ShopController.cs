@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 public class ShopController : MonoBehaviour
 {
@@ -17,16 +14,16 @@ public class ShopController : MonoBehaviour
     private int _updateDamageLevel;
     private int _shopDamage;
     private int __damagePrice;
-    
+
 
     private Bullet _bulletController;
-    
+
 
 
     private void Awake()
     {
         _updateSpeedLevel = PlayerPrefs.GetInt("SpeedLevel", 4);
-        _speedPrice = PlayerPrefs.GetInt("UpdateSpeedPrice", 5); 
+        _speedPrice = PlayerPrefs.GetInt("UpdateSpeedPrice", 5);
         _speed = 1f / _updateSpeedLevel;
 
         _updateDamageLevel = PlayerPrefs.GetInt("DamageLevel", 1);
@@ -46,23 +43,23 @@ public class ShopController : MonoBehaviour
 
         _damagePriceText.text = __damagePrice.ToString();
         _damageText.text = _shopDamage.ToString();
-        
+
 
 
         _allMoney = PlayerPrefs.GetInt("SafeMoney", 0);
         _allMoneyText.text = _allMoney.ToString();
-        
+
     }
 
 
-    public void UpSpeed() 
+    public void UpSpeed()
     {
-        if (_allMoney >= _speedPrice) 
+        if (_allMoney >= _speedPrice)
         {
             _allMoney -= _speedPrice;
 
             _updateSpeedLevel++;
-            _speedPrice = (int)(_speedPrice + ((_speedPrice * .25f) * _updateSpeedLevel));
+            _speedPrice = (int)(_speedPrice + ((_speedPrice * 0.1f) * _updateSpeedLevel));
             _speed = 1f / _updateSpeedLevel;
 
             _speedText.text = Mathf.Round(1 / _speed).ToString();
@@ -74,17 +71,17 @@ public class ShopController : MonoBehaviour
 
             _bulletController._shootigSpeed = _speed;
         }
-       
+
     }
 
-    public void UpDamage() 
+    public void UpDamage()
     {
-        if (_allMoney >= __damagePrice) 
+        if (_allMoney >= __damagePrice)
         {
             _allMoney -= __damagePrice;
 
             _updateDamageLevel++;
-            __damagePrice = (int)(__damagePrice + ((__damagePrice * .25f) * _updateDamageLevel));
+            __damagePrice = (int)(__damagePrice + ((__damagePrice * 0.40f) * _updateDamageLevel));
             _shopDamage = _updateDamageLevel;
             _bulletController._damageShop = _shopDamage;
 
@@ -101,7 +98,7 @@ public class ShopController : MonoBehaviour
 
     public float GetSpeed() { return _speed; }
 
-    public void GetGameMoney(int amount) 
+    public void GetGameMoney(int amount)
     {
         _allMoney += amount;
         _allMoneyText.text = _allMoney.ToString();
@@ -112,7 +109,7 @@ public class ShopController : MonoBehaviour
         PlayerPrefs.SetInt("SafeMoney", _allMoney);
         PlayerPrefs.SetInt("UpdateSpeedPrice", _speedPrice);
         PlayerPrefs.SetInt("UpdateDamagePrice", __damagePrice);
-        
+
     }
 
 

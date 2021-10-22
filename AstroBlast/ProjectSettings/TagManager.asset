@@ -8,6 +8,7 @@ TagManager:
   - Earth
   - Meteor
   - Coin
+  - UFO
   layers:
   - Default
   - TransparentFX

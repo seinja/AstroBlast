@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerControoler : MonoBehaviour
 {
-    [SerializeField]private float _speed = .01f;
-    [SerializeField]private float offset = 10f;
+    [SerializeField] private float _speed = .01f;
+    [SerializeField] private float offset = 10f;
     [SerializeField] private int _hp = 1;
     Vector3 diretection;
 
@@ -19,10 +17,10 @@ public class PlayerControoler : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Meteor")) 
+        if (collision.gameObject.CompareTag("Meteor"))
         {
             _hp--;
-            if(_hp <= 0) 
+            if (_hp <= 0)
             {
                 GameManager.Instance.GameOver();
                 Debug.Log("Game Over");
@@ -30,7 +28,7 @@ public class PlayerControoler : MonoBehaviour
         }
     }
 
-   
+
 
 
 

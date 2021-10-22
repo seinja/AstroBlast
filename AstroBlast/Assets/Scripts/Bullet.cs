@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -22,27 +21,27 @@ public class Bullet : MonoBehaviour
     }
 
 
-    void Shoot() 
+    void Shoot()
     {
         _shootAudio.Play();
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation );
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         bullet.GetComponent<BulletController>()._damage = _damageShop;
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         _sparks.SetActive(true);
         rb.AddForce(firePoint.up * bulletForce, ForceMode2D.Impulse);
-        
+
     }
 
-    IEnumerator Shooting() 
+    IEnumerator Shooting()
     {
         if (!GameManager.isGameWin && !GameManager.isGameOver)
         {
 
-                Shoot();
-                yield return new WaitForSeconds(0.09f);
-                _sparks.SetActive(false);
-                yield return new WaitForSeconds(_shootigSpeed);
-                StartCoroutine(Shooting());
+            Shoot();
+            yield return new WaitForFixedUpdate();
+            _sparks.SetActive(false);
+            yield return new WaitForSeconds(_shootigSpeed);
+            StartCoroutine(Shooting());
         }
 
     }
@@ -53,4 +52,6 @@ public class Bullet : MonoBehaviour
     }
 
     public int GetDamage() { return _damageShop; }
+
+    public void ContinueShoot() { StartCoroutine(Shooting()); }
 }
