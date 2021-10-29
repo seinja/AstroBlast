@@ -1,149 +1,85 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class ShopController : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _speedPriceText, _speedText, _allMoneyText, _damageText, _damagePriceText;
+    private int _speedLevel;
+    private int _damageLevel;
+    private int _speedUpdatePrice;
+    private int _damageUpdatePrice;
 
-    private int _allMoney;
-
-    private int _updateSpeedLevel;
-    private float _speed;
-    private int _speedPrice;
-
-    private int _updateDamageLevel;
-    private int _shopDamage;
-    private int __damagePrice;
+    private Bank _bank;
 
 
-    private Bullet _bulletController;
+    public delegate void SpeedHandler(int newValue, int speedUpdatePrice);
+    public event SpeedHandler OnSpeedChagedEvent;
 
+    public delegate void DamageHandler(int newValue, int damageUpdatePrice);
+    public event DamageHandler OnDamageChagedEvent;
 
 
     private void Awake()
     {
-        _updateSpeedLevel = PlayerPrefs.GetInt("SpeedLevel", 4);
-        _speedPrice = PlayerPrefs.GetInt("UpdateSpeedPrice", 5);
-        _speed = 1f / _updateSpeedLevel;
+        _bank = GetComponent<Bank>();
+        _speedLevel = PlayerPrefs.GetInt("SpeedLevel", 4);
+        _damageLevel = PlayerPrefs.GetInt("DamageLevel", 1);
+        _speedUpdatePrice = PlayerPrefs.GetInt("SpeedUpdatePrice", 5);
+        _damageUpdatePrice = PlayerPrefs.GetInt("DamageUpdatePrice", 10);
+    }
 
-        _updateDamageLevel = PlayerPrefs.GetInt("DamageLevel", 1);
-        _shopDamage = _updateDamageLevel;
-        __damagePrice = PlayerPrefs.GetInt("UpdateDamagePrice", 8);
-
-
-
-        _speedText.text = Mathf.Round(1 / _speed).ToString();
-        _speedPriceText.text = _speedPrice.ToString();
-
-
-        _bulletController = FindObjectOfType<Bullet>();
-        _bulletController._shootigSpeed = _speed;
-
-        _bulletController._damageShop = _shopDamage;
-
-        _damagePriceText.text = __damagePrice.ToString();
-        _damageText.text = _shopDamage.ToString();
-
-
-
-        _allMoney = PlayerPrefs.GetInt("SafeMoney", 0);
-        _allMoneyText.text = _allMoney.ToString();
-
+    private void Start()
+    {
+        Debug.Log("Speed update price " + _speedUpdatePrice);
+        Debug.Log("Damage update price " + _damageUpdatePrice);
     }
 
 
-    public void UpSpeed()
+    public void UpdateSpeed() 
     {
-        if (_allMoney >= _speedPrice)
+        if (_bank.IsEnoughCoins(_speedUpdatePrice)) 
         {
-            _allMoney -= _speedPrice;
+            _bank.SpendCoins(this,_speedUpdatePrice);
 
-            _updateSpeedLevel++;
-            _speedPrice = (int)(_speedPrice + ((_speedPrice * 0.1f) * _updateSpeedLevel));
-            _speed = 1f / _updateSpeedLevel;
+            _speedLevel++;
+            _speedUpdatePrice = _speedUpdatePrice * _speedLevel;
 
-            _speedText.text = Mathf.Round(1 / _speed).ToString();
-            _speedPriceText.text = _speedPrice.ToString();
+            this.OnSpeedChagedEvent?.Invoke(_speedLevel, _speedUpdatePrice);
+        }
+    }
 
-            _allMoneyText.text = _allMoney.ToString();
-            PlayerPrefs.SetInt("SpeedLevel", _updateSpeedLevel);
-            PlayerPrefs.SetInt("UpdateSpeedPrice", _speedPrice);
 
-            _bulletController._shootigSpeed = _speed;
+    public void UpodateDamage() 
+    {
+        if (_bank.IsEnoughCoins(_damageUpdatePrice)) 
+        {
+            _bank.SpendCoins(this, _damageUpdatePrice);
+
+            _damageLevel++;
+            _damageUpdatePrice = _damageUpdatePrice * _damageLevel;
+
+            this.OnDamageChagedEvent?.Invoke(_damageLevel, _damageUpdatePrice);
         }
 
     }
 
-    public void UpDamage()
-    {
-        if (_allMoney >= __damagePrice)
-        {
-            _allMoney -= __damagePrice;
+    public int GetDamageLevel => _damageLevel;
+    public int GetSpeedLevel => _speedLevel;
 
-            _updateDamageLevel++;
-            __damagePrice = (int)(__damagePrice + ((__damagePrice * 0.40f) * _updateDamageLevel));
-            _shopDamage = _updateDamageLevel;
-            _bulletController._damageShop = _shopDamage;
-
-            _damageText.text = _shopDamage.ToString();
-            _damagePriceText.text = __damagePrice.ToString();
-
-            _allMoneyText.text = _allMoney.ToString();
-            PlayerPrefs.SetInt("DamageLevel", _updateDamageLevel);
-            PlayerPrefs.SetInt("UpdateDamagePrice", __damagePrice);
-
-
-        }
-    }
-
-    public float GetSpeed() { return _speed; }
-
-    public void GetGameMoney(int amount)
-    {
-        _allMoney += amount;
-        _allMoneyText.text = _allMoney.ToString();
-    }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.SetInt("SafeMoney", _allMoney);
-        PlayerPrefs.SetInt("UpdateSpeedPrice", _speedPrice);
-        PlayerPrefs.SetInt("UpdateDamagePrice", __damagePrice);
-
-    }
-
-
-    public void ResetProgress()
-    {
-        PlayerPrefs.DeleteAll();
-        _updateSpeedLevel = 4;
-        _updateDamageLevel = 1;
-
-        _speedPrice = PlayerPrefs.GetInt("UpdateSpeedPrice", 5);
-        _speed = 1f / _updateSpeedLevel;
-
-        _shopDamage = _updateDamageLevel;
-        __damagePrice = PlayerPrefs.GetInt("UpdateDamagePrice", 8);
+    public int GetDamagePrice => _damageUpdatePrice;
+    public int GetSpeedPrice => _speedUpdatePrice;
 
 
 
-        _speedText.text = Mathf.Round(1 / _speed).ToString();
-        _speedPriceText.text = _speedPrice.ToString();
-
-
-        _bulletController = FindObjectOfType<Bullet>();
-        _bulletController._shootigSpeed = _speed;
-
-        _bulletController._damageShop = _shopDamage;
-
-        _damagePriceText.text = __damagePrice.ToString();
-        _damageText.text = _shopDamage.ToString();
 
 
 
-        _allMoney = PlayerPrefs.GetInt("SafeMoney", 0);
-        _allMoneyText.text = _allMoney.ToString();
-    }
+
+
+
+
+
+
 
 
 

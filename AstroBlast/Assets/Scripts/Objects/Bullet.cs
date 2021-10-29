@@ -1,13 +1,33 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
+
     [SerializeField] private GameObject _explosion;
+
+
+    private int _damage;
+    private Rigidbody2D _rb;
     private float offsetX = 70f;
     private float offsetY = 41f;
-    public int _damage;
+    private ShopController _shopController;
 
+    private void Awake()
+    {
+        _damage = PlayerPrefs.GetInt("DamageLevel", 1);
+        _rb = GetComponent<Rigidbody2D>();
+        _shopController = FindObjectOfType<ShopController>();
+
+        _shopController.OnDamageChagedEvent += OnDamageUpdate;
+
+    }
+
+    private void OnDamageUpdate(int newValue, int damageUpdatePrice)
+    {
+        _damage = newValue;
+    }
 
     void Update()
     {
@@ -31,7 +51,6 @@ public class BulletController : MonoBehaviour
         }
     }
 
-
     IEnumerator Explsion()
     {
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
@@ -41,7 +60,10 @@ public class BulletController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void BulletMove(Transform firepoint, float force) 
+    {
+        _rb.AddForce(firepoint.up * force, ForceMode2D.Impulse);
+    }
 
-
-    public int GetDamage() { return _damage; }
+    public int GetDamage => _damage;
 }

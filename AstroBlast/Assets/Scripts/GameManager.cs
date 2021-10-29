@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,12 +10,13 @@ public class GameManager : MonoBehaviour
      */
 
 
-
-
     // Описание UI и магазина
-    [SerializeField] private TextMeshProUGUI _currentLevelText, _nextLevelText, _cuurentAmountOfCoinsText;
+    [SerializeField] private TextMeshProUGUI _currentLevelText, _nextLevelText;
     [SerializeField] private Slider _levelProgression;
     [SerializeField] private GameObject _shopPanel;
+
+    private Bank _bank;
+    private CoinsGameUIController _coinsGameUIController;
 
 
     [SerializeField] private GameObject _progressionUI;
@@ -28,15 +30,16 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     private int _currentLevel;
     private int _nextLevel;
-    private int _cuurentAmountOfCoins = 0;
     private int _countOfMeteors;
 
 
     // Инициализация синглтона  и полей 
     private void Awake()
     {
+        _bank = GetComponent<Bank>();
         _progressionUI.SetActive(true);
         _shopController = GetComponent<ShopController>();
+        _coinsGameUIController = GetComponent<CoinsGameUIController>();
 
         if (Instance == null)
         {
@@ -49,18 +52,9 @@ public class GameManager : MonoBehaviour
         _shopPanel.SetActive(false);
 
         // Инициализация полей UI
-        _currentLevel = PlayerPrefs.GetInt("CuurentLevel", 1);
-        _cuurentAmountOfCoinsText.text = _cuurentAmountOfCoins.ToString();
-        _currentLevelText.text = _currentLevel.ToString();
-        _nextLevel = _currentLevel + 1;
-        _nextLevelText.text = _nextLevel.ToString();
-        _levelProgression.maxValue = _currentLevel * 3;
-        _levelProgression.value = 0;
+        LevelProgresBarInit();
 
         _countOfMeteors = _currentLevel * 3;
-
-
-
 
     }
 
@@ -75,8 +69,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
     // Конец игры и вывод магаза
     public void GameOver()
     {
@@ -84,12 +76,10 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         Time.timeScale = 0f;
         _shopPanel.SetActive(true);
-        _shopController.GetGameMoney(_cuurentAmountOfCoins);
-
-
-
-
+        _bank.EndLevel();
+        _coinsGameUIController.ClearCoinsUI();
     }
+
     // Конец игры и вывод магаза
     public void WinGame()
     {
@@ -98,17 +88,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         _shopPanel.SetActive(true);
         _currentLevel++;
-        PlayerPrefs.SetInt("CuurentLevel", _currentLevel);
-        _shopController.GetGameMoney(_cuurentAmountOfCoins);
+        _bank.EndLevel();
+        _coinsGameUIController.ClearCoinsUI();
 
-    }
-
-
-    // Подбор монеты игроком и изменение UI
-    public void PickUpCoin(int amount)
-    {
-        _cuurentAmountOfCoins += amount;
-        _cuurentAmountOfCoinsText.text = _cuurentAmountOfCoins.ToString();
     }
 
     // Возвращение в игру
@@ -120,16 +102,15 @@ public class GameManager : MonoBehaviour
         ClearProgressBar();
         _shopPanel.SetActive(false);
         Time.timeScale = 1f;
-        _cuurentAmountOfCoins = 0;
-        _cuurentAmountOfCoinsText.text = _cuurentAmountOfCoins.ToString();
 
-        _levelProgression.maxValue = _currentLevel * 3;
-        _levelProgression.value = 0;
+        LevelProgresBarUpdate();
+        _coinsGameUIController.ClearCoinsUI();
 
         _countOfMeteors = _currentLevel * 3;
 
         FindObjectOfType<MeteoSpawner>().RestartSpawn();
-        FindObjectOfType<Bullet>().ContinueShoot();
+        FindObjectOfType<BulletController>().StopAllCoroutines();
+        FindObjectOfType<BulletController>().ContinueShoot();
 
     }
 
@@ -139,25 +120,15 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-
     // Отчистка UI
     private void ClearProgressBar()
     {
-        _currentLevelText.text = _currentLevel.ToString();
-        _nextLevel = _currentLevel + 1;
-        _nextLevelText.text = _nextLevel.ToString();
-        _levelProgression.maxValue = _currentLevel * 3;
-        _levelProgression.value = 0;
+        LevelProgresBarUpdate();
 
         _countOfMeteors = _currentLevel * 3;
     }
 
     public int GetCurrentLevel() { return _currentLevel; }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.SetInt("CuurentLevel", _currentLevel);
-    }
 
     public void ResetProgress()
     {
@@ -170,10 +141,28 @@ public class GameManager : MonoBehaviour
         _levelProgression.value = 0;
 
         _countOfMeteors = _currentLevel * 3;
-
-        _shopController.ResetProgress();
     }
 
     public int GetMeteorsCount() { return _countOfMeteors; }
+
+
+    private void LevelProgresBarInit() 
+    {
+        _currentLevel = PlayerPrefs.GetInt("GameLevel", 1);
+        _currentLevelText.text = _currentLevel.ToString();
+        _nextLevel = _currentLevel + 1;
+        _nextLevelText.text = _nextLevel.ToString();
+        _levelProgression.maxValue = _currentLevel * 3;
+        _levelProgression.value = 0;
+    }
+
+    private void LevelProgresBarUpdate() 
+    {
+        _currentLevelText.text = _currentLevel.ToString();
+        _nextLevel = _currentLevel + 1;
+        _nextLevelText.text = _nextLevel.ToString();
+        _levelProgression.maxValue = _currentLevel * 3;
+        _levelProgression.value = 0;
+    }
 
 }

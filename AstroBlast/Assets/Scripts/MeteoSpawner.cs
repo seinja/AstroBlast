@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class MeteoSpawner : MonoBehaviour
 {
+    [SerializeField] private GameObject UFOBoss;
+
     public GameObject[] meteors = new GameObject[3];
     private float _mapOffsetX = 70f;
     private float _mapOffsetY = 41f;
@@ -47,10 +49,17 @@ public class MeteoSpawner : MonoBehaviour
     {
         if (!GameManager.isGameWin && !GameManager.isGameOver)
         {
-            for (int i = 0; i <= GameManager.Instance.GetMeteorsCount() + 1; i++)
+            if (GameManager.Instance.GetCurrentLevel() % 5 == 0)
             {
-                SpawnTargets();
-                yield return new WaitForSeconds(1f);
+                SpawnBoss();
+            }
+            else
+            {
+                for (int i = 0; i <= GameManager.Instance.GetMeteorsCount() + 3; i++)
+                {
+                    SpawnTargets();
+                    yield return new WaitForSeconds(1f);
+                }
             }
         }
     }
@@ -58,6 +67,11 @@ public class MeteoSpawner : MonoBehaviour
     public void RestartSpawn()
     {
         StartCoroutine(SpawnMeteors());
+    }
+
+    private void SpawnBoss()
+    {
+        Instantiate(UFOBoss, transform.position + new Vector3(70, 0, 0), Quaternion.identity);
     }
 
 

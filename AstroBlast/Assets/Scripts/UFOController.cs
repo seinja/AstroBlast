@@ -29,7 +29,7 @@ public class UFOController : MonoBehaviour
 
     private void Update()
     {
-        _rb.AddForce((_player.gameObject.transform.position - transform.position).normalized * 6f);
+        _rb.AddForce((_player.gameObject.transform.position - transform.position).normalized * 20f);
     }
 
 
@@ -44,10 +44,10 @@ public class UFOController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.TryGetComponent<BulletController>(out BulletController bulletController))
+        if (collision.gameObject.TryGetComponent<Bullet>(out Bullet bullet))
         {
 
-            _hp -= bulletController.GetDamage() - 1;
+            _hp -= bullet.GetDamage;
             UpdateHp();
             if (_hp <= 0)
             {

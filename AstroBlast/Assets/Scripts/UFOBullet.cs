@@ -46,10 +46,10 @@ public class UFOBullet : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        if (collision.gameObject.TryGetComponent<BulletController>(out BulletController bulletController))
+        if (collision.gameObject.TryGetComponent<Bullet>(out Bullet bullet))
         {
 
-            _hp -= bulletController.GetDamage();
+            _hp -=  bullet.GetDamage;
             if (_hp <= 0)
             {
                 Instantiate(coin, transform.position, Quaternion.identity);

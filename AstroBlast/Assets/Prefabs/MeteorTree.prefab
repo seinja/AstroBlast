@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 2023544583136229792}
   - component: {fileID: -1548896991012392600}
   - component: {fileID: -4133667847927492605}
+  - component: {fileID: 3681931330908919487}
   m_Layer: 0
   m_Name: MeteorTree
   m_TagString: Meteor
@@ -197,11 +198,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31cf343ae58ec704893b24f551ddd13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpText: {fileID: 5177592050203030578}
-  _childMeteor: {fileID: 6269151356303191505, guid: 9edc6774122d59b4aa5acaae1c03d916,
-    type: 3}
-  _explosion: {fileID: 8111987170324355982}
-  coin: {fileID: 1786642909217245007, guid: 22dcf3a2082003d48a4c1af4092665cb, type: 3}
 --- !u!50 &-1548896991012392600
 Rigidbody2D:
   serializedVersion: 4
@@ -239,6 +235,21 @@ CircleCollider2D:
   m_Offset: {x: 0.018032312, y: 0.0802896}
   serializedVersion: 2
   m_Radius: 1.2797773
+--- !u!114 &3681931330908919487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4007799838868670876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31dcefb0e68c4b74081d27703524a4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coin: {fileID: 1786642909217245007, guid: 22dcf3a2082003d48a4c1af4092665cb, type: 3}
+  _explosion: {fileID: 8111987170324355982}
+  _hpText: {fileID: 5177592050203030578}
 --- !u!1 &7559169031657545915
 GameObject:
   m_ObjectHideFlags: 0
